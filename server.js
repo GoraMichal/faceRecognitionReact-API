@@ -1,4 +1,58 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+
+const database = {
+    users: [
+        {
+            id: '1',
+            name: 'Kamil',
+            email: 'kamil@o2.pl',
+            password: 'kamil',
+            entries: 0,
+            joined: new Date()
+        },
+        {
+            id: '2',
+            name: 'Maciek',
+            email: 'maciek@o2.pl',
+            password: 'maciek',
+            entries: 0,
+            joined: new Date()
+        }
+    ]
+}
+
+app.get('/', (req, res) => {
+    res.send('Server working');
+})
+
+app.post('/signin', (req, res) => {
+    if (req.body.id === database.users[0].id
+        && req.body.name === database.users[0].name) {
+        res.json('success');
+    } 
+
+    //res.send('Post working');
+})
+
+app.listen(3000, () => {
+    //console.log('App port 3000')
+});
+
+/*
+ / -> res
+ /signin -> POST
+ /register -> POST = user
+ /profile/:userId -> GET = user
+ /image -> PUT -> user
+*/
+
+
+/* Temp code
+const express = require('express');
 const bodyParser = require('body-parser')
 
 const app = express();
@@ -64,3 +118,4 @@ app.listen(3000);
 //})
 
 //server.listen(3000);
+*/
