@@ -33,9 +33,23 @@ app.post('/signin', (req, res) => {
     if (req.body.id === database.users[0].id
         && req.body.name === database.users[0].name) {
         res.json('success');
-    } 
-
+    } else {
+        res.status(400).json('Error login');
+    }
     //res.send('Post working');
+})
+
+app.post('/register', (req, res) => {
+    const { email, name, password } = req.body;
+    database.users.push({
+        id: '1',
+        name: name,
+        email: email,
+        password: password,
+        entries: 0,
+        joined: new Date()
+    })
+    res.json(database.users[database.users.length-1])
 })
 
 app.listen(3000, () => {
