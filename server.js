@@ -1,28 +1,43 @@
-//const express = require('express');
+const express = require('express');
 
-//const app = express();
+const app = express();
 
-//app.get('/', (req, res) => {
-//    res.send('msg');
-//})
+app.get('/', (req, res) => {
+    res.send('getting root');
+});
 
-//app.listen(2000);
+//http://localhost:3000/profile
+app.get('/profile', (req, res) => {
+    res.send('getting profile');
+});
 
-
-const http = require('http');
-
-const server = http.createServer((request, response) => {
-    console.log('headers', request.headers)
-    console.log('method', request.method)
-    console.log('url', request.url)
-
+//http://localhost:3000/profile/person
+app.get('/profile/person', (req, res) => {
+    //res.send('<h2>msg</h2>');
     const user = {
-        name: 'Kamil',
-        hobby: 'Programowanie'
+        name: 'Michail',
+        surname: 'Tal',
     }
-
-    response.setHeader('Content-Type', 'application/json');
-    response.end(JSON.stringify(user));
+    res.send(user);
 })
 
-server.listen(3000);
+app.listen(3000);
+
+
+//const http = require('http');
+
+//const server = http.createServer((request, response) => {
+//    console.log('headers', request.headers)
+//    console.log('method', request.method)
+//    console.log('url', request.url)
+
+//    const user = {
+//        name: 'Kamil',
+//        hobby: 'Programowanie'
+//    }
+
+//    response.setHeader('Content-Type', 'application/json');
+//    response.end(JSON.stringify(user));
+//})
+
+//server.listen(3000);
