@@ -1,9 +1,12 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(cors());
 
 const database = {
     users: [
@@ -11,13 +14,14 @@ const database = {
             id: '1',
             name: 'Kamil',
             email: 'kamil@o2.pl',
-            //password: 'kamil',
+            password: 'kamil',
             entries: 0,
             joined: new Date()
         },
         {
             id: '2',
             name: 'Maciek',
+            password: 'maciek',
             email: 'maciek@o2.pl',
             entries: 0,
             joined: new Date()
@@ -31,8 +35,6 @@ const database = {
         }
     ]
 }
-
-app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send(database.users);
