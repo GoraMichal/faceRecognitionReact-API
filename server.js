@@ -13,8 +13,8 @@ const database = {
         {
             id: '1',
             name: 'Kamil',
-            email: 'kamil@o2.pl',
             password: 'kamil',
+            email: 'kamil@o2.pl',
             entries: 0,
             joined: new Date()
         },
@@ -26,14 +26,14 @@ const database = {
             entries: 0,
             joined: new Date()
         }
-    ],
-    login: [
-        {
-            id: '9',
-            hash: '',
-            email: 'kamil@o2.pl'
-        }
     ]
+    //login: [
+    //    {
+    //        id: '9',
+    //        hash: '',
+    //        email: 'kamil@o2.pl'
+    //    }
+    //]
 }
 
 app.get('/', (req, res) => {
@@ -50,11 +50,11 @@ app.post('/signin', (req, res) => {
     //    console.log("second", res);
     //});
 
-    if (req.body.name === database.users[0].name
+    if (req.body.email === database.users[0].email
         && req.body.password === database.users[0].password) {
         res.json('success');
     } else {
-        res.status(400).json('Error login');
+        res.status(400).json('Login error');
     }
     //res.send('Post working');
 })
