@@ -12,9 +12,9 @@ const database = {
     users: [
         {
             id: '1',
-            name: 'Kamil',
+            name: 'kamil',
             password: 'kamil',
-            email: 'kamil@o2.pl',
+            email: 'kamil',
             entries: 0,
             joined: new Date()
         },
@@ -52,8 +52,8 @@ app.post('/signin', (req, res) => {
 
     if (req.body.email === database.users[0].email
         && req.body.password === database.users[0].password) {
-        //res.json(database.users[0]);
-        res.json('success');
+        res.json(database.users[0]);
+        //res.json('success');
     } else {
         res.status(400).json('Login error');
     }
