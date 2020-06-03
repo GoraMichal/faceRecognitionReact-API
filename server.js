@@ -2,11 +2,38 @@ const express = require('express');
 var bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const knex = require('knex');
+
+const postgres = knex({
+    client: 'pg',
+    connection: {
+        host: '127.0.0.1',
+        user: 'postgres',
+        password: '',
+        database: 'facerecoreact'
+    }
+});
+
+console.log(postgres.select('*').from('users'));
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+
+//create table users(
+//    id serial PRIMARY KEY,
+//    name VARCHAR(100),
+//    email text UNIQUE NOT NULL,
+//    entries BIGINT DEFAULT 0,
+//    joined TIMESTAMP NOT NULL
+//);
+
+//create table login(
+//    id serial PRIMARY KEY,
+//    hash varchar(100) NOT NULL,
+//    email text UNIQUE NOT NULL
+//);
 
 const database = {
     users: [
@@ -75,10 +102,11 @@ app.post('/register', (req, res) => {
         entries: 0,
         joined: new Date()
     })
-    res.json(database.users[database.users.length-1])
+    res.json(database.users[database.users.length - 1])
 })
 
-////:id - konkretne parametry z id
+//https://stackoverflow.com/questions/41058569/what-is-the-difference-between-const-and-const-in-javascript/41058622
+//:id - konkretne parametry z id
 app.get('/profile/:id', (req, res) => {
     const { id } = req.params;
     let found = false;
@@ -92,6 +120,7 @@ app.get('/profile/:id', (req, res) => {
         res.status(404).json('User not found');
     }
 })
+
 //cannot set headers after they are sent to the client
 
 app.put('/image', (req, res) => {
