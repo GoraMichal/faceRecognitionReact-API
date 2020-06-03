@@ -4,36 +4,24 @@ const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 
-const postgres = knex({
+const db = knex({
     client: 'pg',
     connection: {
         host: '127.0.0.1',
         user: 'postgres',
-        password: '',
+        password: 'admin',
         database: 'facerecoreact'
     }
 });
 
-console.log(postgres.select('*').from('users'));
+//db.select('*').from('users').then(data => {
+//    console.log(data);
+//});
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-
-//create table users(
-//    id serial PRIMARY KEY,
-//    name VARCHAR(100),
-//    email text UNIQUE NOT NULL,
-//    entries BIGINT DEFAULT 0,
-//    joined TIMESTAMP NOT NULL
-//);
-
-//create table login(
-//    id serial PRIMARY KEY,
-//    hash varchar(100) NOT NULL,
-//    email text UNIQUE NOT NULL
-//);
 
 const database = {
     users: [
@@ -54,59 +42,33 @@ const database = {
             joined: new Date()
         }
     ]
-    //login: [
-    //    {
-    //        id: '9',
-    //        hash: '',
-    //        email: 'kamil@o2.pl'
-    //    }
-    //]
 }
 
 app.get('/', (req, res) => {
     res.send(database.users);
-    //res.send('Server working');
 })
 
 app.post('/signin', (req, res) => {
-    // Load hash from your password DB.
-    //bcrypt.compare("kamil", '$2a$10$OsLZ0WMdAofxH/krVR4Geugac7o0ZtOV.HAGKgz/ASpEzEcSU4wXS', function (err, res) {
-    //    console.log("first", res);
-    //});
-    //bcrypt.compare("veggies", '$2a$10$OsLZ0WMdAofxH/krVR4Geugac7o0ZtOV.HAGKgz/ASpEzEcSU4wXS', function (err, res) {
-    //    console.log("second", res);
-    //});
-
     if (req.body.email === database.users[0].email
         && req.body.password === database.users[0].password) {
         res.json(database.users[0]);
-        //res.json('success');
     } else {
         res.status(400).json('Login error');
     }
-    //res.send('Post working');
 })
 
 app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
 
-    //bcrypt.hash(password, null, null, function (err, hash) {
-    //    console.log(hash);
-    //});
-
-    database.users.push({
-        id: '10',
-        name: name,
+    db('users').insert({
         email: email,
-        password: password,
-        entries: 0,
-        joined: new Date()
-    })
+        name: name,
+        joined: new Date
+    }).then(console.log);
+
     res.json(database.users[database.users.length - 1])
 })
 
-//https://stackoverflow.com/questions/41058569/what-is-the-difference-between-const-and-const-in-javascript/41058622
-//:id - konkretne parametry z id
 app.get('/profile/:id', (req, res) => {
     const { id } = req.params;
     let found = false;
@@ -120,8 +82,6 @@ app.get('/profile/:id', (req, res) => {
         res.status(404).json('User not found');
     }
 })
-
-//cannot set headers after they are sent to the client
 
 app.put('/image', (req, res) => {
     const { id } = req.body;
@@ -138,94 +98,4 @@ app.put('/image', (req, res) => {
     }
 })
 
-app.listen(3000, () => {
-    //console.log('App port 3000')
-});
-
-/*
- / -> res
- /signin -> POST
- /register -> POST = user
- /profile/:userId -> GET = user
- /image -> PUT -> user
-*/
-
-
-/* Temp code
-const express = require('express');
-const bodyParser = require('body-parser')
-
-const app = express();
-
-app.use(express.static(__dirname + '/public'))
-
-//app.use((req, res, next) => {
-//    console.log('MSG');
-//    next();
-//})
-
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-    //req.query
-    //req.body
-    //req.header
-    //req.params
-    res.send('getting root');
-});
-
-////http://localhost:3000/profile
-app.get('/profile', (req, res) => {
-    res.send('getting profile');
-});
-
-////http://localhost:3000/profile
-////get, post, put, use
-app.get('/profile', (req, res) => {
-    //res.send('<h2>msg</h2>');
-    console.log(req.body);
-    const user = {
-        name: 'Michail',
-        surname: 'Tal',
-    }
-    res.send(user);
-});
-
-app.post('/profile', (req, res) => {
-    //res.send('<h2>msg</h2>');
-    console.log(req.body);
-    res.send('Good job');
-});
-
-
-app.get('/profile/:id', (req, res) => {
-    const { id } = req.params;
-    database.users.forEach(user => {
-        if (user.id === id) {
-            res.json(user);
-        } else {
-            res.status(404).json('wrong user');
-        }
-    })
-})
-
-
-//const http = require('http');
-
-//const server = http.createServer((request, response) => {
-//    console.log('headers', request.headers)
-//    console.log('method', request.method)
-//    console.log('url', request.url)
-
-//    const user = {
-//        name: 'Kamil',
-//        hobby: 'Programowanie'
-//    }
-
-//    response.setHeader('Content-Type', 'application/json');
-//    response.end(JSON.stringify(user));
-//})
-
-//server.listen(3000);
-*/
+app.listen(3000);
