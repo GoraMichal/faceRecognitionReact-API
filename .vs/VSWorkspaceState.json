@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\controllers"
   ],
-  "SelectedNode": "\\server-temp.js",
+  "SelectedNode": "\\controllers\\register.js",
   "PreviewInSolutionExplorer": false
 }

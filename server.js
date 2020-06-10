@@ -4,7 +4,11 @@ const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 
+const signin = require('./controllers/signin');
 const register = require('./controllers/register');
+const profile = require('./controllers/profile');
+const image = require('./controllers/image');
+
 
 const db = knex({
     client: 'pg',
@@ -29,62 +33,16 @@ app.get('/', (req, res) => {
     res.send(database.users);
 })
 
-app.post('/signin', (req, res) => {
-    db.select('email', 'hash').from('login')
-        .where('email', '=', req.body.email)
-        .then(data => {
-            const isValid = bcrypt.compareSync(req.body.password, data[0].hash)
-            if (isValid) {
-                return db.select('*').from('users')
-                    .where('email', '=', req.body.email)
-                    .then(user => {
-                        console.log(user);
-                        res.json(user[0])
-                    })
-                    .catch(err => res.status(400).json('Wrong user'))
-            } else {
-                res.status(400).json('Wrong authentication')
-            }
-            //console.log(data);
-        })
-        .catch(err => res.status(400).json('Wrong authentication'))
-})
-
 //dependency injection
-app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
+app.post('/signin', signin.hadleSignin(db, bcrypt))
+app.post('/register', register.handleRegister(db, bcrypt))
+app.post('/profile/:id', profile.handleProfile(db))
+app.put('/image', (req, res) => { image.handleImage(req, res, db) })
 
-//where precyzuje konkretne wartosci.
-//jezeli wartosc i wlasciwosc maja ta sama nazwe to mozna np. { id }, przeciwnie { id: klucz }
-app.get('/profile/:id', (req, res) => {
-    const { id } = req.params;
-    let found = false;
-    db.select('*').from('users').where({ id })
-        .then(user => {
-            //console.log(user[0]);
-            if (user.lenght) {
-                res.json(user[0])
-            } else {
-                res.status(400).json('User not found')
-            }
-        })
-        .catch(err => res.status(400).json('User not found'))
+//app.post('/signin', (req, res) => { signin.hadleSignin(req, res, db, bcrypt) })
+//app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
+//app.post('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) })
+//app.put('/image', (req, res) => { image.handleImage(req, res, db) })
 
-    //if (!found) {
-    //    res.status(404).json('User not found');
-    //}
-})
-
-app.put('/image', (req, res) => {
-    const { id } = req.body;
-    db('users').where('id', '=', id)
-        //.update({ entries:  })
-        .increment('entries', 1)
-        .returning('entries')
-        .then(entries => {
-            res.json(entries[0])
-            //console.log(entries);
-        })
-        .catch(err => res.status(400).json('Entries error'))
-})
 
 app.listen(3000);
