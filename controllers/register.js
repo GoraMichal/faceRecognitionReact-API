@@ -1,6 +1,11 @@
 const handleRegister = (db, bcrypt) => (req, res) => {
     const { email, name, password } = req.body;
 
+    //Z retrun dalsza czesc kodu sie nie wyswietli
+    if (!email || !name || !password) {
+        return res.status(400).json('Wrong data');
+    }
+
     var hash = bcrypt.hashSync(password);
 
     db.transaction(trx => {

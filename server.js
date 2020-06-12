@@ -38,6 +38,7 @@ app.post('/signin', signin.hadleSignin(db, bcrypt))
 app.post('/register', register.handleRegister(db, bcrypt))
 app.post('/profile/:id', profile.handleProfile(db))
 app.put('/image', (req, res) => { image.handleImage(req, res, db) })
+app.post('/imageurl', (req, res) => { image.handleApiClarifai(req, res) })
 
 //app.post('/signin', (req, res) => { signin.hadleSignin(req, res, db, bcrypt) })
 //app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
